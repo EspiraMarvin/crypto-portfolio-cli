@@ -1,0 +1,19 @@
+{
+  "name": "cli-web3",
+  "version": "1.0.0",
+  "description": "web3 portfolio cli",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "espiramarvin@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "boxen": "4.0",
+    "chalk": "2.4",
+    "commander": "^9.4.1",
+    "inquirer": "^4.0.0",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.25.4"
+  }
+}
