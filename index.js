@@ -1,68 +1,53 @@
-const Portfolio = require("./models/Portfolio")
-const { Sequelize } = require("sequelize")
-const chalk = require("chalk")
-const boxen = require("boxen")
+const db = require("./config/db")
 
-const boxenOptions = {
-  padding: 1,
-  margin: 1,
-  borderStyle: "round",
-  borderColor: "green",
-  backgroundColor: "#555555",
-}
+// 1. Given no parameters, return the latest portfolio value per token in USD
 
-//Given no parameters, return the latest portfolio value per token in USD
 const latestPortfolio = async () => {
-  const res = await Portfolio.max("time_stamp", {
-    // attributes:['time_stamp', 'token', 'transaction_type', 'amount'],
-    // group: ["time_stamp"],
-  })
-  console.log("latestPortfolio results", res)
-  process.exit()
+  const res = await db.query(
+    `SELECT token, SUM(amount) as total_amount, transaction_type from portfolios GROUP BY token, transaction_type`
+  )
+  console.log("lastest portfolio", res[0])
+  process.exit(0)
 }
-// latestPortfolio()
 
-// Given a token, return the latest portfolio value for that token in USD
-const latestPortfolioGivenToken = async (token) => {
+// 2. Given a token, return the latest portfolio value for that token in USD
+
+const latestPortfolioGivenToken = async ({ token }) => {
   let searchToken = token.toUpperCase()
-  const res = await Portfolio.findOne({
-    attributes: [Sequelize.fn("max", Sequelize.col("time_stamp"))],
-    where: { token: searchToken },
-  })
-  console.log("latestPortfolioValueGivenToken results", res.dataValues)
-  process.exit()
+  const res = await db.query(
+    `SELECT SUM(amount) as total_amount, transaction_type from portfolios WHERE token='${searchToken}' GROUP BY transaction_type`
+  )
+  console.log("latestPortfolioValueGivenToken results ", res[0])
+  process.exit(0)
 }
 
-async function findMe() {
-  const res = await Portfolio.findOne({
-    where: { time_stamp: "1571967208" },
-  })
-  console.log("portfolio results", res.dataValues)
-}
-// findMe()
+// 3. Given a date, return the portfolio value per token in USD on that date
 
-const findCount = async () => {
-  const count = await Portfolio.count()
-  const msgBox = boxen(chalk.white.bold(count), boxenOptions)
-  console.log(msgBox)
-  process.exit()
+const portfolioValueOnDate = async ({ time_stamp }) => {
+  let searchDate = Math.floor(new Date(time_stamp).getTime() / 1000)
+  const res = await db.query(
+    `SELECT SUM(amount) as total_amount, transaction_type from portfolios WHERE time_stamp <= '${searchDate}' GROUP BY transaction_type`
+  )
+  console.log("portfolioValueOnDate results ", res[0])
+  process.exit(0)
 }
 
-// findCount()
+// 4. Given a date and a token, return the portfolio value of that token in USD on that date
 
-async function getLatestPortfolio() {
-  const res = await Portfolio.findAll({
-    where: {
-      attributes: [[Sequelize.fn("max", Sequelize.col("time_stamp")), "max"]],
-    },
-  })
-  console.log("portfolio results", res.dataValues)
+const portfolioValueOnDateAndToken = async ({ time_stamp, token }) => {
+  if (token > "2019-10-25" || token < "1972-10-02") process.exit(1)
+  let searchToken = token.toUpperCase()
+  let searchDate = Math.floor(new Date(time_stamp).getTime() / 1000)
+  const res = await db.query(
+    `SELECT SUM(amount) as total_amount, transaction_type from portfolios WHERE time_stamp <= '${searchDate}' AND token = '${searchToken}' GROUP BY transaction_type`
+  )
+  console.log("portfolioValueOnDate results ", res[0])
+  process.exit(0)
 }
-
-// getLatestPortfolio()
 
 module.exports = {
   latestPortfolio,
   latestPortfolioGivenToken,
-  findCount,
+  portfolioValueOnDate,
+  portfolioValueOnDateAndToken,
 }

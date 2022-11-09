@@ -9,7 +9,7 @@ id INT
 LOAD DATA INFILE '/var/lib/mysql-files/transactions.csv' INTO TABLE porfolios fieLds terminated BY ',' IGNORE 1 lines (time_stamp, transaction_type, token, amount);
 
 ## index fields
-ALTER TABLE tbl_name ADD INDEX index_name (time_stamp)  to add index
+ALTER TABLE portfolios ADD INDEX index_time_stamp (time_stamp) to add index to the timestamp column, this helps our improve query time.
 
 
 
@@ -47,3 +47,6 @@ sudo npm install -g
 ```bash
 welc
 ```
+
+
+note: due to time, I could've used some abstraction later like prisma, typescript ORM, which enables you to connect to any database and test, but I chose mysql for speed.

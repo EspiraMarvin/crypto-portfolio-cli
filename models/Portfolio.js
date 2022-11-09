@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes } = require("sequelize")
+const { Sequelize, Model, DataTypes } = require("sequelize")
 const db = require("../config/db")
 
 const Portfolio = db.define(
@@ -6,9 +6,11 @@ const Portfolio = db.define(
   {
     time_stamp: {
       type: DataTypes.STRING,
-      get() {
-        return moment(this.getDataValue('createdAt')).format('DD/MM/YYYY h:mm:ss');
-    }
+      // get() {
+      //   return moment(this.getDataValue("createdAt")).format(
+      //     "DD/MM/YYYY h:mm:ss"
+      //   )
+      // },
     },
     transaction_type: {
       type: DataTypes.STRING,

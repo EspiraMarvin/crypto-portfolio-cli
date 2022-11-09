@@ -3,54 +3,57 @@ const { program } = require("commander")
 const {
   latestPortfolio,
   latestPortfolioGivenToken,
-  findCount,
+  portfolioValueOnDate,
+  portfolioValueOnDateAndToken,
 } = require("./index")
+const {
+  dateQuestion,
+  tokenQuestion,
+  dateTokenQuestion,
+} = require("./prompt-questions")
 
 const { prompt } = require("inquirer")
 
-// program.version("1.0.0").description("Porfolio Tracker CLI ")
-
-// console.log("prgram", program.name)
-
-const tokenQuestions = [
-  { type: "input", name: "token", message: "Token Name (eg BTC or ETH)" },
-]
+program.version("1.0.0").description("Porfolio Tracker CLI ")
 
 program
-  .command("latestwithtoken")
-  .alias("lt")
+  .command("latest-portfolio")
+  .alias("lp")
+  .description("Get the latest portfolio")
+  .action(() => {
+    latestPortfolio()
+  })
+
+program
+  .command("latest-portfolio-given-token")
+  .alias("lpt")
   .description("Get the latest portfolio given a token")
   .action(() => {
-    prompt(tokenQuestions).then((answers) => {
-      console.log("latestPortfolio command called")
-      latestPortfolioGivenToken(answers.token)
+    prompt(tokenQuestion).then((answers) => {
+      latestPortfolioGivenToken(answers)
     })
   })
 
 program
-  .command("count")
-  .alias("c")
-  .description("Get the count of all records")
-  .action(() => findCount())
-
-program
-  .command("latest")
-  .alias("l")
-  .description("Get the latest portfolio")
+  .command("portfolio-given-date")
+  .alias("pd")
+  .description("Get portfolio value on a given date")
   .action(() => {
-    console.log("latestPortfolio command called")
-    latestPortfolio()
+    prompt(dateQuestion).then((answers) => {
+      console.log("answers", answers)
+      portfolioValueOnDate(answers)
+    })
   })
 
-// program
-//   .command("get latest token <token>")
-//   .alias("lt")
-//   .description("Get the latest portfolio given a token")
-//   .action((token) => {
-//     console.log("latestPortfolioValueGivenToken command called")
-//     latestPortfolioGivenToken(token)
-//   })
+program
+  .command("portfolio-given-date-and-token")
+  .alias("pdt")
+  .description("Get portfolio value on a given date and token")
+  .action(() => {
+    prompt(dateTokenQuestion).then((answers) => {
+      portfolioValueOnDateAndToken(answers)
+    })
+  })
 
-// console.log("prgram", program)
 
 program.parse(process.argv)
