@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 const { program } = require("commander")
 const {
   latestPortfolio,
@@ -19,7 +20,7 @@ program.version("1.0.0").description("Porfolio Tracker CLI ")
 program
   .command("latest-portfolio")
   .alias("lp")
-  .description("Get the latest portfolio")
+  .description("Get the latest portfolio per token")
   .action(() => {
     latestPortfolio()
   })

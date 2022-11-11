@@ -1,52 +1,107 @@
-## DB Setup
+## setting the project
 
-CREATE TABLE portfolios
-values 
-id INT 
+To install dependencies run
 
+1. git clone on your work dir and cd into it
+
+2. yarn / npm install
+
+3. copy details in the .env.example create an .env file and copy its content
+
+## DB Setup (used MYSQL Database)
+
+1. Steps create a database name I called it portfolio
+2. Create a table with these fields
+   > id as auto increment, time_stamp, token and transaction_type
+
+```bash
+
+CREATE TABLE portfolios(id BIGINT NOT NULL AUTO_INCREMENT, time_stamp INT NOT NULL, transaction_type VARCHAR(10) NOT NULL,token VARCHAR(10) NOT NULL, amount INT NOT NULL, PRIMARY KEY(id))
+
+```
 
 ## Add the CSV FILE inside the /var/lib/mysql-files
+
 LOAD DATA INFILE '/var/lib/mysql-files/transactions.csv' INTO TABLE porfolios fieLds terminated BY ',' IGNORE 1 lines (time_stamp, transaction_type, token, amount);
 
+> Note: My machine has Ubuntu OS, so I added the csv file inside /var/lib/mysql-files, this is the location where I pull the file and saved to the db using `LOAD DATA INFILE`.
+
 ## index fields
+
 ALTER TABLE portfolios ADD INDEX index_time_stamp (time_stamp) to add index to the timestamp column, this helps our improve query time.
 
 
+## commands (recommended for testing)
 
-## steps
+```bash
 
-1. npm init -y
+# Get the latest portfolio per token
 
-2. Create a `bin` folder and put index.js inside
+ node commands.js lp 
 
-3. Add a script in the index.js file, making sure this line is at the top 
+# Get the latest portfolio given a token
+
+ node commands.js lpt 
+
+# Get portfolio value on a given date
+
+ node commands.js pd 
+
+# Get portfolio value on a given date and token
+
+ node commands.js pdt 
+
+```
+
+## Problem encountered:
+Couldn't get the right historic data for USD from the compare API provided. Opted to show with the lasted USD to token exchange rate.
+
+
+
+
+### IGNORE while testing
+- May fail to work when linked to the shell
+
+## to link to the shell 
+
+1. I added the code below at the top commands.js file.
+
 ```js
 #!/usr/bin/env node
 ```
 
-4. Change main script to point to the bin folder
+2. At the package.json file I added the scripts below
 
 ```bash
-  "main": "./bin/index.js",
+  "preferGlobal": true,
+  "bin": "./commands.js",
 ```
 
-5. Create a script to run the cli
+the last script `"bin" : "./commands.js"` makes the commands global
+
+3. created asym link by running,
+   > npm link
+
+To unlink just run `npm unlink`
+
+4. Now you can call commands on any location on our CMD starting with the name of our script in the package.json file `cli-web3`
+
+# after publishing run commands
+
+version 1.0.0 should be the output
 ```bash
-  "bin": {
-    "welc": "./bin/index.js"
-  },
+ cli-web3 --version
+
+get the help page
+
+ cli-web3 --help 
+
+ cli-web3 lp 
+
+ cli-web3 lpt
+
+ cli-web3 pd 
+
+ cli-web3 pdt
+
 ```
-
-6. To install the CLI, run
-```bash
-sudo npm install -g
-```
-
-7. The run the script, and this can be run from anywhere.
-
-```bash
-welc
-```
-
-
-note: due to time, I could've used some abstraction later like prisma, typescript ORM, which enables you to connect to any database and test, but I chose mysql for speed.
