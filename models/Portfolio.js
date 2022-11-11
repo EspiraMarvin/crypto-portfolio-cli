@@ -6,11 +6,6 @@ const Portfolio = db.define(
   {
     time_stamp: {
       type: DataTypes.STRING,
-      // get() {
-      //   return moment(this.getDataValue("createdAt")).format(
-      //     "DD/MM/YYYY h:mm:ss"
-      //   )
-      // },
     },
     transaction_type: {
       type: DataTypes.STRING,
