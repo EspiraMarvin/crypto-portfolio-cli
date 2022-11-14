@@ -53,14 +53,6 @@ ALTER TABLE portfolios ADD INDEX index_time_stamp (time_stamp) to add index to t
 
 ```
 
-## Problem encountered:
-Couldn't get the right historic data for USD from the compare API provided. Opted to show with the lasted USD to token exchange rate.
-
-
-
-
-### IGNORE while testing
-- May fail to work when linked to the shell
 
 ## to link to the shell 
 
